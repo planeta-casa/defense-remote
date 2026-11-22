@@ -52,8 +52,9 @@ async function main() {
   // ---------- раскладка ----------
   let lastRenderPx = 0;
   function layout(): number {
-    const W = innerWidth;
-    const H = innerHeight;
+    // вкладка, открытая в фоне или в свёрнутом окне, может сообщить размер 0 — берём размер экрана
+    const W = innerWidth > 200 ? innerWidth : screen.width || 1920;
+    const H = innerHeight > 200 ? innerHeight : screen.height || 1080;
     const areaH = H - PLAYER_H - PAD * 2;
     const colFull = Math.round((areaH * 9) / 16);
     const colW = video.id ? colFull : 0;
@@ -71,7 +72,7 @@ async function main() {
     s.setProperty('--video-h', `${areaH}px`);
     s.setProperty('--pad', `${PAD}px`);
     s.setProperty('--player-h', `${PLAYER_H}px`);
-    return Math.min(2560, cw * Math.min(2, devicePixelRatio || 1));
+    return Math.max(960, Math.min(2560, cw * Math.min(2, devicePixelRatio || 1)));
   }
   function relayout(afterMs: number) {
     const px = layout();
