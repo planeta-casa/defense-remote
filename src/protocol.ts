@@ -4,6 +4,9 @@
 export type RemoteEvent =
   | { type: 'meme'; id: string }
   | { type: 'shake' }
+  | { type: 'music-mute'; muted: boolean }
+  | { type: 'music-volume'; volume: number }
+  | { type: 'restart' }
   | { type: 'video'; id: string }
   | { type: 'video-off' }
   | { type: 'ticker'; text: string; custom: boolean }
@@ -28,6 +31,8 @@ export interface SharedState {
   gachaEnabled: boolean;
   gachaSpun: boolean;
   genre: string | null;
+  musicMuted: boolean;
+  volume: number;
   video: string | null;
   ticker: boolean;
   wrapped: boolean;

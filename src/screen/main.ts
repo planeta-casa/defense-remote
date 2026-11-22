@@ -106,6 +106,8 @@ async function main() {
         gachaEnabled: state.gachaEnabled,
         gachaSpun: state.gachaSong !== null,
         genre: g?.name ?? null,
+        musicMuted: state.musicMuted,
+        volume: state.volume,
         video: video.id,
         ticker: ticker.active,
         wrapped: wrapped.visible,
@@ -404,6 +406,25 @@ async function main() {
     switch (ev.type) {
       case 'meme': return spawnMeme(ev.id);
       case 'shake': return nextGenre();
+      case 'music-mute':
+        state.musicMuted = ev.muted;
+        music.setMuted(state.musicMuted);
+        updateMusicLabel();
+        S.save();
+        publish();
+        toasts.show(state.musicMuted ? 'Фоновая музыка выключена' : 'Фоновая музыка включена', 1200, 'small');
+        return;
+      case 'music-volume':
+        state.volume = Math.max(0, Math.min(4, ev.volume));
+        music.setVolume(state.volume);
+        updateMusicLabel();
+        S.save();
+        publish();
+        return;
+      case 'restart':
+        S.resetAll();
+        location.reload();
+        return;
       case 'video': return showVideo(ev.id);
       case 'video-off': return hideVideo();
       case 'ticker': return showTicker(ev.text, ev.custom);

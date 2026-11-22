@@ -71,17 +71,26 @@ async function remote(cfg: Config) {
 
   root.innerHTML = `
     <header class="hdr">
-      <div class="hdr-left"><b>Пульт жюри</b><span class="hdr-room">${esc(room)}</span></div>
-      <div class="status"><i></i><span>Подключаемся…</span></div>
+      <div class="hdr-left"><b>Пульт</b><span class="hdr-room">${esc(room)}</span></div>
+      <div class="hdr-actions"><button class="share-btn" type="button" aria-label="Поделиться пультом">↗</button><div class="status"><i></i><span>Подключаемся…</span></div></div>
     </header>
     <div class="sub"><span class="sub-slide">—</span><span class="sub-sent"></span></div>
     <main class="panes">
       <section class="pane" data-tab="memes"><div class="memes-grid"></div></section>
-      <section class="pane" data-tab="wave">
-        <button class="btn shake-btn">Встряхнуть</button>
-        <div class="wave-now">Жанр ещё не выбран</div>
-        <button class="btn motion-btn">Включить встряхивание телефона</button>
-        <p class="hint">Каждое встряхивание включает следующий жанр: украшения и фоновая музыка.</p>
+      <section class="pane wave-pane" data-tab="wave">
+        <div class="wave-hero">
+          <div class="wave-orb"><span>♫</span></div>
+          <div class="wave-eyebrow">ВАША МУЗЫКАЛЬНАЯ ВОЛНА</div>
+          <div class="wave-now">Жанр ещё не выбран</div>
+          <div class="wave-subtitle">Меняйте настроение одним движением</div>
+        </div>
+        <div class="music-card">
+          <div class="music-card-head"><div><div class="music-caption">ФОНОВАЯ МУЗЫКА</div><div class="music-state">Состояние обновится после подключения</div></div><button class="music-toggle" type="button" aria-pressed="false"><span class="music-toggle-icon">Ⅱ</span><span class="music-toggle-label">Выкл.</span></button></div>
+          <label class="volume-row"><span>Громкость</span><input class="volume-slider" type="range" min="0" max="400" value="100"><output class="volume-value">100%</output></label>
+        </div>
+        <button class="btn shake-btn">Сменить волну <span>↗</span></button>
+        <button class="btn motion-btn">Включить встряхивание</button>
+        <p class="hint">Встряхивание меняет жанр. Музыка включается и выключается отдельно.</p>
       </section>
       <section class="pane" data-tab="videos">
         <div class="videos-grid"></div>
@@ -102,9 +111,28 @@ async function remote(cfg: Config) {
       </section>
     </main>
     <nav class="tabs">${TABS.map(([id, name]) => `<button data-tab="${id}">${name}</button>`).join('')}</nav>
+    <div class="remote-footer"><button class="restart-btn" type="button">↺ Начать презентацию заново</button></div>
     <div class="paused"><div><b>Ведущий поставил пульт на паузу</b><span>Кнопки снова заработают, когда он его включит.</span></div></div>`;
 
   const $ = <T extends HTMLElement>(s: string) => root.querySelector(s) as T;
+
+  // --- поделиться пультом
+  $('.share-btn').onclick = async () => {
+    const url = new URL('remote.html', document.baseURI);
+    url.searchParams.set('room', room);
+    try {
+      if (navigator.share) await navigator.share({ title: 'Пульт жюри', text: `Подключиться к пульту · код ${room}`, url: url.href });
+      else { await navigator.clipboard.writeText(url.href); $('.share-btn').textContent = '✓'; setTimeout(() => $('.share-btn').textContent = '↗', 1400); }
+    } catch (err) {
+      if ((err as Error)?.name !== 'AbortError') {
+        try { await navigator.clipboard.writeText(url.href); $('.share-btn').textContent = '✓'; setTimeout(() => $('.share-btn').textContent = '↗', 1400); }
+        catch { prompt('Скопируйте ссылку на пульт:', url.href); }
+      }
+    }
+  };
+  $('.restart-btn').onclick = () => {
+    if (confirm('Начать презентацию заново? Слайды, таймер и статистика будут сброшены.')) send({ type: 'restart' }, $('.restart-btn'));
+  };
 
   // --- вкладки
   function showTab(t: Tab) {
@@ -141,8 +169,17 @@ async function remote(cfg: Config) {
     mg.appendChild(b);
   }
 
-  // --- волна
+  // --- волна и отдельное управление фоновой музыкой
   $('.shake-btn').onclick = (e) => send({ type: 'shake' }, e.currentTarget as HTMLElement);
+  const musicToggle = $<HTMLButtonElement>('.music-toggle');
+  musicToggle.onclick = () => send({ type: 'music-mute', muted: !musicToggle.classList.contains('is-on') }, musicToggle);
+  const volumeSlider = $<HTMLInputElement>('.volume-slider');
+  let volumeDebounce = 0;
+  volumeSlider.oninput = () => {
+    $('.volume-value').textContent = `${volumeSlider.value}%`;
+    window.clearTimeout(volumeDebounce);
+    volumeDebounce = window.setTimeout(() => send({ type: 'music-volume', volume: Number(volumeSlider.value) / 100 }, volumeSlider), 90);
+  };
   setupMotion($('.motion-btn'), () => send({ type: 'shake' }, $('.shake-btn')));
 
   // --- ролики
@@ -204,7 +241,16 @@ async function remote(cfg: Config) {
     root.classList.toggle('is-paused', !!state?.paused);
     if (!state) return;
     $('.sub-slide').textContent = state.total ? `Слайд ${state.slide + 1} / ${state.total}` : '';
-    $('.wave-now').textContent = state.genre ? `Сейчас: ${state.genre}` : 'Жанр ещё не выбран';
+    $('.wave-now').textContent = state.genre ? state.genre : 'Жанр ещё не выбран';
+    const musicMuted = state.musicMuted ?? false;
+    const musicVolume = Number.isFinite(state.volume) ? state.volume : 1;
+    musicToggle.classList.toggle('is-on', !musicMuted);
+    musicToggle.setAttribute('aria-pressed', String(!musicMuted));
+    $('.music-toggle-label').textContent = musicMuted ? 'Выкл.' : 'Вкл.';
+    $('.music-toggle-icon').textContent = musicMuted ? '▶' : 'Ⅱ';
+    $('.music-state').textContent = musicMuted ? 'Музыка выключена' : 'Музыка играет';
+    if (document.activeElement !== volumeSlider) volumeSlider.value = String(Math.round(musicVolume * 100));
+    $('.volume-value').textContent = `${Math.round(musicVolume * 100)}%`;
     root.querySelectorAll<HTMLElement>('.vtile').forEach((b) => b.classList.toggle('active', b.dataset.id === state!.video));
     ($('.video-off') as HTMLButtonElement).disabled = !state.video;
     ($('.tk-off') as HTMLButtonElement).disabled = !state.ticker;

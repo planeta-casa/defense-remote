@@ -73,6 +73,7 @@ export class QrPanel {
     const dataUrl = await QRCode.toDataURL(url, { margin: 1, width: 520, errorCorrectionLevel: 'M', color: { dark: '#111111', light: '#ffffff' } });
     const short = url.replace(/^https?:\/\//, '').replace(/\?.*$/, '');
     this.el.innerHTML = `
+      <button class="qr-close" type="button" aria-label="Скрыть QR">×</button>
       <div class="qr-kicker">Пульт для жюри</div>
       <img class="qr-img" src="${dataUrl}" alt="QR">
       <div class="qr-code">${esc(room)}</div>
@@ -82,6 +83,12 @@ export class QrPanel {
   show(v: boolean) {
     this.visible = v;
     this.el.classList.toggle('show', v);
+  }
+
+  constructor() {
+    this.el.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('.qr-close')) this.show(false);
+    });
   }
 }
 

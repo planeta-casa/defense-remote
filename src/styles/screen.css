@@ -1,3 +1,4 @@
+@font-face { font-family: YSMusic; src: url('../assets/fonts/ys-music-headline-bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 :root {
   --yellow: #ffdb4d;
   --bg: #0f0f10;
@@ -318,3 +319,5 @@ button { font: inherit; cursor: pointer; }
 .dbg-log { max-height: 26vh; overflow: auto; padding: 6px 8px; }
 .dbg-log .warn { color: #ffb347; }
 .fatal { position: fixed; inset: 20px; z-index: 100; background: #300; color: #fcc; padding: 20px; white-space: pre-wrap; overflow: auto; }
+
+.qr-close{position:absolute;top:8px;right:8px;width:34px;height:34px;border:0;border-radius:50%;background:#eee;color:#222;font-size:25px;line-height:1;cursor:pointer}.qr-panel{padding-top:26px}.gate-title{font-family:YSMusic,'Onest Variable',sans-serif}
