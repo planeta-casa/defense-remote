@@ -1,0 +1,58 @@
+{
+  "pdf": "assets/presentation.pdf",
+  "player": {
+    "title": "Дипломная защита",
+    "artist": "Команда «Мэтч»",
+    "cover": "assets/cover.svg",
+    "durationSec": 420,
+    "warnAtSec": 360,
+    "autostart": true,
+    "nextTrack": "Вопросы комиссии"
+  },
+  "slogan": "Любимая музыка ещё впереди. Пока вы просто не знакомы",
+  "gachaFromSlide": null,
+  "memes": [
+    { "id": "cat", "file": "assets/memes/cat.svg", "label": "Кот" },
+    { "id": "fire", "file": "assets/memes/fire.svg", "label": "Огонь" },
+    { "id": "match", "file": "assets/memes/match.svg", "label": "Мэтч" },
+    { "id": "clown", "file": "assets/memes/clown.svg", "label": "Клоун" },
+    { "id": "skull", "file": "assets/memes/skull.svg", "label": "Умер" },
+    { "id": "hundred", "file": "assets/memes/hundred.svg", "label": "Сто" },
+    { "id": "popcorn", "file": "assets/memes/popcorn.svg", "label": "Попкорн" },
+    { "id": "sus", "file": "assets/memes/sus.svg", "label": "Хм" },
+    { "id": "cry", "file": "assets/memes/cry.svg", "label": "Плачу" },
+    { "id": "rocket", "file": "assets/memes/rocket.svg", "label": "Взлёт" },
+    { "id": "goat", "file": "assets/memes/goat.svg", "label": "Гоат" },
+    { "id": "clap", "file": "assets/memes/clap.svg", "label": "Браво" }
+  ],
+  "videos": [
+    { "id": "subway", "file": "assets/videos/subway.mp4", "poster": "assets/videos/subway.jpg", "label": "Сабвей" },
+    { "id": "carpet", "file": "assets/videos/carpet.mp4", "poster": "assets/videos/carpet.jpg", "label": "Мойка ковров" },
+    { "id": "detailing", "file": "assets/videos/detailing.mp4", "poster": "assets/videos/detailing.jpg", "label": "Детейлинг" },
+    { "id": "slime", "file": "assets/videos/slime.mp4", "poster": "assets/videos/slime.jpg", "label": "Слаймы" }
+  ],
+  "genres": [
+    { "id": "cozy", "name": "Уютное", "music": "assets/genres/cozy/music.mp3", "decor": "svg:cozy" },
+    { "id": "gothic", "name": "Готика", "music": "assets/genres/gothic/music.mp3", "decor": "svg:gothic" },
+    { "id": "racing", "name": "Гонки", "music": "assets/genres/racing/music.mp3", "decor": "svg:racing" },
+    { "id": "rave", "name": "Рейв", "music": "assets/genres/rave/music.mp3", "decor": "svg:rave" },
+    { "id": "country", "name": "Кантри", "music": "assets/genres/country/music.mp3", "decor": "svg:country" }
+  ],
+  "startGenre": null,
+  "tickerPresets": [
+    "Жюри одобряет",
+    "Срочно: этот слайд мэтчнулся",
+    "Комиссия в восторге",
+    "Можно этот слайд ещё раз?",
+    "Ставим лайк и свайпаем дальше",
+    "Алиса, запомни этот момент"
+  ],
+  "tickerLoops": 3,
+  "gacha": [
+    { "title": "Алиса, включи весну", "artist": "Заглушка №1", "file": "assets/gacha/1.mp3", "cover": "assets/gacha/1.svg", "rarity": "common", "weight": 6 },
+    { "title": "Колыбельная от Алисы", "artist": "Заглушка №2", "file": "assets/gacha/2.mp3", "cover": "assets/gacha/2.svg", "rarity": "common", "weight": 6 },
+    { "title": "Алиса, что такое любовь", "artist": "Заглушка №3", "file": "assets/gacha/3.mp3", "cover": "assets/gacha/3.svg", "rarity": "rare", "weight": 3 },
+    { "title": "Алиса, поставь на репит", "artist": "Заглушка №4", "file": "assets/gacha/4.mp3", "cover": "assets/gacha/4.svg", "rarity": "legendary", "weight": 1 }
+  ],
+  "volume": { "genre": 0.12, "gacha": 0.25 }
+}
