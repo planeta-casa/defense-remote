@@ -136,7 +136,7 @@ async function remote(cfg: Config) {
   // --- мемы
   const mg = $('.memes-grid');
   for (const m of cfg.memes) {
-    const b = el('button', 'tile', `<img src="${assetUrl(m.file)}" alt="" loading="lazy"><span>${esc(m.label)}</span>`);
+    const b = el('button', 'tile', `<img src="${assetUrl(m.file)}" alt=""><span>${esc(m.label)}</span>`);
     b.onclick = () => send({ type: 'meme', id: m.id }, b);
     mg.appendChild(b);
   }
@@ -148,7 +148,7 @@ async function remote(cfg: Config) {
   // --- ролики
   const vg = $('.videos-grid');
   for (const v of cfg.videos) {
-    const b = el('button', 'vtile', `${v.poster ? `<img src="${assetUrl(v.poster)}" alt="" loading="lazy">` : ''}<span>${esc(v.label)}</span>`);
+    const b = el('button', 'vtile', `${v.poster ? `<img src="${assetUrl(v.poster)}" alt="">` : ''}<span>${esc(v.label)}</span>`);
     b.dataset.id = v.id;
     b.onclick = () => send({ type: 'video', id: v.id }, b);
     vg.appendChild(b);
